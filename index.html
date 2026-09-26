@@ -2,299 +2,88 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Car Dodge</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Street Drive</title>
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
-
-body{
-  background:#111;
-  font-family:Arial,sans-serif;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
-  overflow:hidden;
-}
-
-.game{
-  width:100%;
-  max-width:400px;
-  height:100vh;
-  max-height:700px;
-  background:#333;
-  position:relative;
-  overflow:hidden;
-}
-
-.score{
-  position:absolute;
-  top:15px;
-  left:15px;
-  color:white;
-  font-size:22px;
-  font-weight:bold;
-  z-index:10;
-}
-
-.road{
-  width:100%;
-  height:100%;
-  background:#292929;
-  position:relative;
-}
-
-.line{
-  position:absolute;
-  width:8px;
-  height:80px;
-  background:white;
-  left:50%;
-  transform:translateX(-50%);
-  opacity:.8;
-}
-
-.car{
-  position:absolute;
-  bottom:80px;
-  width:55px;
-  height:90px;
-  background:#e60000;
-  border-radius:12px;
-  left:calc(50% - 27px);
-  z-index:5;
-  box-shadow:0 0 15px #ff3333;
-}
-
-.car:before,
-.enemy:before{
-  content:"";
-  position:absolute;
-  width:38px;
-  height:28px;
-  background:#8ed8ff;
-  left:8px;
-  top:12px;
-  border-radius:7px;
-}
-
-.enemy{
-  position:absolute;
-  width:55px;
-  height:90px;
-  background:#0066ff;
-  border-radius:12px;
-  top:-100px;
-  z-index:4;
-}
-
-.controls{
-  position:absolute;
-  bottom:15px;
-  width:100%;
-  display:flex;
-  justify-content:space-around;
-  z-index:20;
-}
-
-button{
-  width:120px;
-  height:55px;
-  border:none;
-  border-radius:15px;
-  font-size:25px;
-  font-weight:bold;
-  background:white;
-}
-
-.gameover{
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,.85);
-  color:white;
-  display:none;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  z-index:50;
-}
-
-.gameover h1{
-  font-size:42px;
-  margin-bottom:15px;
-}
-
-.gameover button{
-  margin-top:20px;
-  background:#00d26a;
-  color:white;
-}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#111;font-family:Arial,sans-serif;touch-action:none}
+#game{position:relative;width:100%;height:100%;max-width:520px;margin:auto;overflow:hidden;background:#75a95b}
+#sky{position:absolute;inset:0 0 55% 0;background:linear-gradient(#75b8e8,#dceef7)}
+#mountain{position:absolute;left:-10%;right:-10%;bottom:43%;height:25%;background:linear-gradient(135deg,transparent 35%,#638b62 36% 54%,transparent 55%),linear-gradient(45deg,transparent 42%,#527652 43% 60%,transparent 61%);opacity:.8}
+#grass{position:absolute;inset:45% 0 0;background:linear-gradient(90deg,#568d45,#76a958 50%,#568d45)}
+#road{position:absolute;top:35%;bottom:-5%;left:12%;right:12%;background:#3b3d40;clip-path:polygon(34% 0,66% 0,100% 100%,0 100%)}
+.edge{position:absolute;top:35%;bottom:-5%;width:7px;background:#eee;z-index:2}
+#edgeL{left:12%}#edgeR{right:12%}
+.lane{position:absolute;left:50%;width:7px;height:100px;background:#f4f4f4;transform:translateX(-50%);z-index:3;opacity:.9}
+#car,#traffic{position:absolute;z-index:8;filter:drop-shadow(0 8px 5px #1118)}
+.carbody{position:relative;width:66px;height:118px;border-radius:18px 18px 13px 13px;background:linear-gradient(90deg,#080b0f,#c9cdd1 45%,#171a1e);border:2px solid #aaa;box-shadow:inset 0 0 8px #fff5}
+.window{position:absolute;left:10px;top:16px;width:42px;height:37px;border-radius:11px 11px 7px 7px;background:linear-gradient(145deg,#dff7ff,#244b65);border:2px solid #111}
+.window2{position:absolute;left:10px;top:57px;width:42px;height:25px;background:#17232c;border-radius:5px}
+.light{position:absolute;bottom:9px;width:13px;height:7px;background:#fff6c7;border-radius:3px;box-shadow:0 0 8px #fff}
+.light.l{left:8px}.light.r{right:8px}
+.wheel{position:absolute;width:7px;height:26px;background:#080808;border-radius:5px;top:30px}
+.wheel.l{left:-5px}.wheel.r{right:-5px}
+.trafficcar{position:relative;width:58px;height:103px;border-radius:15px;background:linear-gradient(90deg,#151515,#e7e7e7 45%,#222);border:2px solid #999}
+#hud{position:absolute;top:12px;left:12px;right:12px;z-index:20;display:flex;justify-content:space-between;align-items:center;color:white;text-shadow:0 2px 3px #000;font-weight:bold}
+.badge{background:#0008;padding:8px 11px;border-radius:12px;backdrop-filter:blur(4px)}
+#speed{font-size:25px}#score{font-size:17px}
+#controls{position:absolute;bottom:18px;left:0;right:0;z-index:30;display:flex;justify-content:space-between;padding:0 22px}
+.ctrl{width:76px;height:58px;border:1px solid #fff8;border-radius:18px;background:#0009;color:#fff;font-size:29px;box-shadow:0 5px 15px #0005}
+#start,#over{position:absolute;inset:0;z-index:50;background:#0009;display:flex;flex-direction:column;justify-content:center;align-items:center;color:white;text-align:center}
+#over{display:none}
+.panel{width:84%;padding:25px;border-radius:22px;background:#121212eF;border:1px solid #ffffff22;box-shadow:0 15px 50px #000}
+h1{margin:0 0 8px;font-size:38px}p{margin:8px 0 20px;color:#ddd}
+.mainbtn{border:0;border-radius:14px;padding:14px 30px;background:#e9eef2;color:#111;font-size:18px;font-weight:bold}
+#hint{font-size:13px;color:#bbb;margin-top:13px}
 </style>
 </head>
-
 <body>
-
-<div class="game">
-
-  <div class="score">
-    Score: <span id="score">0</span>
+<div id="game">
+  <div id="sky"></div><div id="mountain"></div><div id="grass"></div>
+  <div id="road"></div><div class="edge" id="edgeL"></div><div class="edge" id="edgeR"></div>
+  <div class="lane" id="l1"></div><div class="lane" id="l2"></div><div class="lane" id="l3"></div>
+  <div id="hud"><div class="badge" id="score">SCORE 0</div><div class="badge" id="speed">0 KM/H</div></div>
+  <div id="car" style="left:calc(50% - 33px);bottom:92px">
+    <div class="carbody"><div class="window"></div><div class="window2"></div><div class="wheel l"></div><div class="wheel r"></div><div class="light l"></div><div class="light r"></div></div>
   </div>
-
-  <div class="road" id="road">
-
-    <div class="line" style="top:-100px"></div>
-    <div class="line" style="top:100px"></div>
-    <div class="line" style="top:300px"></div>
-    <div class="line" style="top:500px"></div>
-
-    <div class="car" id="car"></div>
-
-    <div class="enemy" id="enemy"></div>
-
-  </div>
-
-  <div class="controls">
-    <button id="left">⬅️</button>
-    <button id="right">➡️</button>
-  </div>
-
-  <div class="gameover" id="gameover">
-    <h1>GAME OVER</h1>
-    <div>Your Score: <span id="finalScore">0</span></div>
-    <button onclick="restart()">RESTART</button>
-  </div>
-
+  <div id="traffic"></div>
+  <div id="controls"><button class="ctrl" id="left">◀</button><button class="ctrl" id="right">▶</button></div>
+  <div id="start"><div class="panel"><h1>STREET DRIVE</h1><p>Real-car style endless traffic dodge</p><button class="mainbtn" id="play">START DRIVE</button><div id="hint">Use ◀ ▶ or keyboard arrows</div></div></div>
+  <div id="over"><div class="panel"><h1>CRASH!</h1><p id="result">Score 0</p><button class="mainbtn" id="again">DRIVE AGAIN</button></div></div>
 </div>
-
 <script>
+const game=document.getElementById('game'),car=document.getElementById('car'),traffic=document.getElementById('traffic');
+const scoreEl=document.getElementById('score'),speedEl=document.getElementById('speed');
+let running=false,score=0,x=.5,enemyY=-130,enemyX=.5,speed=5,last=0;
 
-const car = document.getElementById("car");
-const enemy = document.getElementById("enemy");
-const scoreText = document.getElementById("score");
-const gameover = document.getElementById("gameover");
-const finalScore = document.getElementById("finalScore");
-
-let carX = 50;
-let enemyX = 50;
-let enemyY = -100;
-let score = 0;
-let speed = 5;
-let playing = true;
-
-function moveCar(direction){
-
-  if(!playing) return;
-
-  carX += direction * 8;
-
-  if(carX < 7) carX = 7;
-  if(carX > 93) carX = 93;
-
-  car.style.left = `calc(${carX}% - 27px)`;
+function spawn(){
+  enemyX=.32+Math.random()*.36; enemyY=-130;
+  traffic.innerHTML='<div class="trafficcar"><div class="window"></div><div class="window2"></div><div class="light l"></div><div class="light r"></div></div>';
+  traffic.style.left=`calc(${enemyX*100}% - 29px)`;
+  traffic.style.top=enemyY+'px';
 }
-
-document.getElementById("left")
-.addEventListener("touchstart", e=>{
-  e.preventDefault();
-  moveCar(-1);
-});
-
-document.getElementById("right")
-.addEventListener("touchstart", e=>{
-  e.preventDefault();
-  moveCar(1);
-});
-
-document.addEventListener("keydown", e=>{
-
-  if(e.key === "ArrowLeft"){
-    moveCar(-1);
-  }
-
-  if(e.key === "ArrowRight"){
-    moveCar(1);
-  }
-
-});
-
-function randomEnemy(){
-
-  enemyX = Math.floor(Math.random()*80)+10;
-  enemyY = -100;
-
-  enemy.style.left = `calc(${enemyX}% - 27px)`;
+function move(d){x+=d*.018;x=Math.max(.23,Math.min(.77,x));car.style.left=`calc(${x*100}% - 33px)`}
+function hit(){
+ const a=car.getBoundingClientRect(),b=traffic.getBoundingClientRect();
+ return a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top;
 }
-
-function collision(){
-
-  const carRect = car.getBoundingClientRect();
-  const enemyRect = enemy.getBoundingClientRect();
-
-  return !(
-    carRect.bottom < enemyRect.top ||
-    carRect.top > enemyRect.bottom ||
-    carRect.right < enemyRect.left ||
-    carRect.left > enemyRect.right
-  );
+function loop(t){
+ if(!running)return;
+ const dt=Math.min(30,t-last);last=t;
+ enemyY+=speed*dt/16;
+ traffic.style.top=enemyY+'px';
+ document.querySelectorAll('.lane').forEach((e,i)=>{let y=((t*speed/18+i*180)%900)-150;e.style.top=(35+ y/9)+'%'});
+ if(hit()){end();return}
+ if(enemyY>game.clientHeight+50){score++;speed=Math.min(14,5+score*.18);scoreEl.textContent='SCORE '+score;spawn()}
+ speedEl.textContent=Math.round(speed*18)+' KM/H';
+ requestAnimationFrame(loop)
 }
-
-function gameLoop(){
-
-  if(!playing) return;
-
-  enemyY += speed;
-  enemy.style.top = enemyY + "px";
-
-  if(collision()){
-    endGame();
-    return;
-  }
-
-  if(enemyY > 750){
-
-    score++;
-    scoreText.textContent = score;
-
-    if(score % 5 === 0){
-      speed += 1;
-    }
-
-    randomEnemy();
-  }
-
-  requestAnimationFrame(gameLoop);
-}
-
-function endGame(){
-
-  playing = false;
-
-  finalScore.textContent = score;
-  gameover.style.display = "flex";
-}
-
-function restart(){
-
-  score = 0;
-  speed = 5;
-  playing = true;
-
-  scoreText.textContent = "0";
-  gameover.style.display = "none";
-
-  randomEnemy();
-  gameLoop();
-}
-
-randomEnemy();
-gameLoop();
-
+function start(){score=0;speed=5;x=.5;running=true;scoreEl.textContent='SCORE 0';document.getElementById('start').style.display='none';document.getElementById('over').style.display='none';spawn();last=performance.now();requestAnimationFrame(loop)}
+function end(){running=false;document.getElementById('result').textContent='You scored '+score+' points';document.getElementById('over').style.display='flex'}
+document.getElementById('play').onclick=start;document.getElementById('again').onclick=start;
+document.getElementById('left').addEventListener('pointerdown',e=>{e.preventDefault();move(-1)});
+document.getElementById('right').addEventListener('pointerdown',e=>{e.preventDefault();move(1)});
+addEventListener('keydown',e=>{if(e.key==='ArrowLeft')move(-1);if(e.key==='ArrowRight')move(1)});
 </script>
-
+</div>
 </body>
 </html>
